@@ -18,6 +18,12 @@ class NginxVhostCommand extends Command
     private const PLACEHOLDER = '__PROJECT__';
 
     /**
+     * The placeholder replaced with the site's application code, relative to
+     * /opt/repos - Paths::siteApp(), e.g. example/deploy
+     */
+    private const APP_PLACEHOLDER = '__APP_PATH__';
+
+    /**
      * The ability to configure the console command
      *
      * @return void
@@ -71,7 +77,7 @@ class NginxVhostCommand extends Command
         $vhost = Paths::siteConfig($site, "1-{$site}-nginx.conf");
         $sample = (string) file_get_contents(Paths::package('stubs/sample.vhost'));
 
-        file_put_contents($vhost, str_replace(self::PLACEHOLDER, $site, $sample));
+        file_put_contents($vhost, strtr($sample, [self::APP_PLACEHOLDER => Paths::siteApp($site), self::PLACEHOLDER => $site]));
 
         $port = getenv('NGINX_PORT') ?: '443';
 

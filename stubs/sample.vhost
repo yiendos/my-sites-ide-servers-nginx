@@ -4,7 +4,7 @@ server {
     ssl_certificate /etc/nginx/ssl/selfsigned.crt;
     ssl_certificate_key /etc/nginx/ssl/selfsigned.key;
 
-    root /opt/repos/__PROJECT__/Sites/public/;
+    root /opt/repos/__APP_PATH__/public/;
 
     index index.php index.html index.htm;
 
