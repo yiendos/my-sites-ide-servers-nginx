@@ -1,0 +1,12 @@
+# [nginx server]
+# The host port nginx serves HTTPS on, defaults live in this plugin's .env (443) -
+# the apache plugin has 8443 and caddy 9443, so pick one nothing else publishes
+#NGINX_PORT=443
+
+# [server network alias]
+# the site nginx aliases onto the my-sites-ide network, so other containers (e.g. a
+# proxy like the zaproxy plugin) can reach it by hostname, default lives inline in
+# this plugin's docker-compose.yml (default.test) - one hostname at a time, uncomment
+# and set to whichever site you're scanning (requires `docker compose up -d nginx`
+# to take effect, and that hostname must be in the target site's own nginx vhost server_name)
+#IDE_SITE_ALIAS=default.test

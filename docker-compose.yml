@@ -6,19 +6,26 @@ services:
             context: .
             dockerfile: Dockerfile
         ports:
-            - '443:443'
+            - "${NGINX_PORT:-443}:443"
         environment:
             FPM_HOST: "fpm:9000"
             SERVER_NAME: "localhost"
         volumes:
-            - './../../../../Repos:/opt/repos/'
+            # Read-only config ships with the package; each site's vhosts are picked up from
+            # Repos/*/_build/config/*nginx.conf (see the last include in conf/nginx.conf)
+            - ./conf/nginx.conf:/etc/nginx/nginx.conf
+            - ${IDE_ROOT}/Repos:/opt/repos/
+            # The self-signed certificate is shared with the apache plugin, so it stays in core
+            - ${IDE_ROOT}/_dev/environment/servers/ssl:/etc/nginx/ssl
             # the IDE's shared certificate store, filled by a certificate plugin (e.g. certbot-cloudflare);
-            # empty without one - sites then use the self-signed certificate below
-            - './../../../../storage/certificates/archive:/etc/nginx/ssl/archive'
-            - './../../../../storage/certificates/live:/etc/nginx/ssl/live'
-            - './../ssl:/etc/nginx/ssl'
-            - './conf/nginx.conf:/etc/nginx/nginx.conf'
+            # empty without one - sites then use the self-signed certificate above. live/ links into
+            # archive/, so the two always go together
+            - ${IDE_ROOT}/storage/certificates/archive:/etc/nginx/ssl/archive
+            - ${IDE_ROOT}/storage/certificates/live:/etc/nginx/ssl/live
         networks:
             my-sites-ide:
                 aliases:
                     - ${IDE_SITE_ALIAS:-default.test}
+
+    # started by `ide:spark` alongside APP (autostart: true in composer.json)
+    # PHP requests go to the IDE's fpm service, so that needs to be running too
