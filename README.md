@@ -82,7 +82,7 @@ host (my-sites-ide CLI)
 
 browser --https:443--> nginx container  (also on the my-sites-ide network as ${IDE_SITE_ALIAS})
                          |- conf/nginx.conf: include /opt/repos/**/_build/config/*nginx.conf
-                         |- static files served straight from /opt/repos/<site>/Sites/public
+                         |- static files served straight from /opt/repos/<site>/<IDE_APP_DIR>/public
                          |- *.php ---- fastcgi_pass fpm:9000 ----> IDE fpm container
 ```
 
@@ -99,10 +99,10 @@ warning on every start and test.
 
 `ide:create-site` and `ide:repo-clone` create that vhost for you through this plugin's
 `site-created` hook. It copies `stubs/sample.vhost` to `Repos/<site>/_build/config/1-<site>-nginx.conf`,
-replacing `__PROJECT__` with the site name:
+replacing `__PROJECT__` with the site name and `__APP_PATH__` with its application folder (`<site>/<IDE_APP_DIR>`, e.g. `example/deploy`):
 
 - `server_name <site>.localhost`, so https://<site>.localhost
-- `root /opt/repos/<site>/Sites/public/`
+- `root /opt/repos/<site>/<IDE_APP_DIR>/public/`
 - PHP passed to `fpm:9000`, with the same document root
 - the IDE's self-signed certificate
 
@@ -181,6 +181,7 @@ To change how nginx behaves:
 | the `fpm` service (`fpm:9000`) | PHP, through `fastcgi_pass` |
 | `NAMESPACE` (root `.env`) | the image name, `${NAMESPACE}_nginx` |
 | `IDE_ROOT` (set by the CLI and `_dev/cache/ide.env`) | reaching the paths above from `vendor/` |
+| `IDE_APP_DIR` (root `.env`, set by the CLI - `deploy` if it isn't) | the application folder in a new site's vhost - `<app>/public` is the document root |
 | the `my-sites-ide` network | reaching `fpm`, and being reached as `IDE_SITE_ALIAS` |
 
 ## Troubleshooting
@@ -219,8 +220,8 @@ hostname, or use a certificate plugin.
 
 ## Known gaps
 
-- The vhost stub assumes a Laravel-style `Sites/public` document root. Other layouts need their
-  vhost edited after it's generated.
+- The vhost stub assumes a Laravel-style `public/` document root inside the application folder
+  (`IDE_APP_DIR`). Other layouts need their vhost edited after it's generated.
 - The default site's vhost (`Repos/_default/_build/config/0-default-nginx.conf`) still lives in the
   IDE, not in this package.
 - Certificate renewals aren't followed by an automatic reload - run `servers:nginx-reload`.

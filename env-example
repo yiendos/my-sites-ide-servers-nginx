@@ -10,3 +10,7 @@
 # and set to whichever site you're scanning (requires `php my-sites-ide servers:nginx-start`
 # to take effect, and that hostname must be in the target site's own nginx vhost server_name)
 #IDE_SITE_ALIAS=default.test
+# Where each site's application code lives, inside Repos/<site>/ - an IDE setting, shared by
+# every plugin: deploy (the default), Sites for the older layout, or . for the repository root.
+# New nginx vhost config documents serve <app>/public. Existing ones aren't rewritten if you change it.
+#IDE_APP_DIR=deploy
