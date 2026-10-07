@@ -29,3 +29,5 @@ services:
 
     # started by `ide:spark` alongside APP (autostart: true in composer.json)
     # PHP requests go to the IDE's fpm service, so that needs to be running too
+    # new sites get their vhost from `php my-sites-ide servers:nginx-vhost <site>`,
+    # run for you by ide:create-site / ide:repo-clone

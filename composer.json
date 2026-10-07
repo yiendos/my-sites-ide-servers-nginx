@@ -10,17 +10,26 @@
             "email": "yiendos@sbmatrix.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "Yiendos\\MySitesIde\\Servers\\Nginx\\": "src/"
+        }
+    },
     "require": {
         "php": "^8.2",
         "symfony/console": "^7.3"
     },
     "extra": {
         "my-sites-ide": {
+            "commands": "src/Console",
             "compose": "docker-compose.yml",
             "env": ".env",
             "env-example": "env-example",
             "services": ["nginx"],
-            "autostart": true
+            "autostart": true,
+            "hooks": {
+                "site-created": ["servers:nginx-vhost"]
+            }
         }
     }
 }

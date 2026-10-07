@@ -7,6 +7,6 @@
 # the site nginx aliases onto the my-sites-ide network, so other containers (e.g. a
 # proxy like the zaproxy plugin) can reach it by hostname, default lives inline in
 # this plugin's docker-compose.yml (default.test) - one hostname at a time, uncomment
-# and set to whichever site you're scanning (requires `docker compose up -d nginx`
+# and set to whichever site you're scanning (requires `php my-sites-ide servers:nginx-start`
 # to take effect, and that hostname must be in the target site's own nginx vhost server_name)
 #IDE_SITE_ALIAS=default.test
