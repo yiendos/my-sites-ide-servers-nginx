@@ -30,12 +30,15 @@ server {
     }
 
 
+    # When a 404 is returned, we want to display our applications 404 page,
+    # so we redirect it to index.php to load the correct page
+    error_page 404 /index.php;
+
     # Whenever we receive a PHP url, or our root location block gets to serving through fpm,
     # we want to pass the request to FPM for processing
     location ~ \.php$ {
         #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
         include fastcgi_params;
-        fastcgi_intercept_errors on;
         fastcgi_pass fpm:9000;
         fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
     }
@@ -46,10 +49,6 @@ server {
     # Feel free to remove them
     location = /favicon.ico { access_log off; log_not_found off; }
     location = /robots.txt  { access_log off; log_not_found off; }
-
-    # When a 404 is returned, we want to display our applications 404 page,
-    # so we redirect it to index.php to load the correct page
-    error_page 404 /index.php;
 
     location ~ /\.ht {
         deny all;
